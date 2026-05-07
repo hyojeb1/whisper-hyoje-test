@@ -15,20 +15,23 @@
 
 using namespace std;
 
-// 현재 명령줄 인자 - C:\Dev\35whisper\whisper.cpp\ggml-small.bin C:\Dev\35whisper\MySamples\sub01_01_김유진_광고.wav ko
+// 현재 명령줄 인자 
+// C:\Dev\35whisper\whisper.cpp\ggml-small.bin C:\Dev\35whisper\MyMicTest\mic_test.wav ko 5
 int main(int argc, char* argv[])
 {
 
-    if (argc < 4)
+    if (argc < 5)
     {
         cout << "Usage:" << endl;
-        cout << "  whisper_hyoje_test.exe <model_path> <wav_path> <language>" << endl;
+        cout << "  whisper_hyoje_test.exe <model_path> <wav_path> <language> <record_second>" << endl;
         return 1;
     }
 
     string modelPath = argv[1];
-    string wavPath  = "C:/Dev/35whisper/MyMicTest/mic_test.wav";
+    string wavPath = argv[2];  //"C:/Dev/35whisper/MyMicTest/mic_test.wav";
     string lang = argv[3];
+	int recordSecond = stoi(argv[4]);
+
     string txtOutputPath = wavPath + ".txt";
     string srtOutputPath = wavPath + ".srt";
 
@@ -37,7 +40,7 @@ int main(int argc, char* argv[])
 
     MicRecorder recorder;
 
-    const bool success = recorder.recordToFile("C:/Dev/35whisper/MyMicTest/mic_test.wav", 5);
+    const bool success = recorder.recordToFile(wavPath, recordSecond);
 
     if (!success)
     {
@@ -95,7 +98,7 @@ int main(int argc, char* argv[])
     }
 
     vector<TranscriptionSegment> mTranscriptionSegment{};
-    mTranscriptionSegment = mWhisperTranscriber.Transcribe(wav.samples, "ko", 16);
+    mTranscriptionSegment = mWhisperTranscriber.Transcribe(wav.samples, lang, 16);
 
     SaveTxt(txtOutputPath, mTranscriptionSegment);
     SaveSrt(srtOutputPath, mTranscriptionSegment);
